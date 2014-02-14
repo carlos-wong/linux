@@ -173,19 +173,19 @@ static struct gpio_keys_button gcw0_buttons[] = {
 		.debounce_interval	= 10,
 	},
 	/* Left shoulder button */ {
-		.gpio			= JZ_GPIO_PORTB(20),
+		.gpio			= JZ_GPIO_PORTE(22),
 		.active_low		= 1,
 		.code			= KEY_TAB,
 		.debounce_interval	= 10,
 	},
 	/* Right shoulder button */ {
-		.gpio			= JZ_GPIO_PORTE(26),
+		.gpio			= JZ_GPIO_PORTB(28),
 		.active_low		= 1,
 		.code			= KEY_BACKSPACE,
 		.debounce_interval	= 10,
 	},
 	/* START button */ {
-		.gpio			= JZ_GPIO_PORTB(21),
+		.gpio			= JZ_GPIO_PORTB(30),
 		.active_low		= 1,
 		.code			= KEY_ENTER,
 		.debounce_interval	= 10,
@@ -199,19 +199,7 @@ static struct gpio_keys_button gcw0_buttons[] = {
 		.code			= KEY_ESC,
 		.debounce_interval	= 10,
 	},
-	/* POWER slider */ {
-		.gpio			= JZ_GPIO_PORTA(30),
-		.active_low		= 1,
-		.code			= KEY_POWER,
-		.debounce_interval	= 10,
-		.wakeup			= 1,
-	},
-	/* POWER hold */ {
-		.gpio			= JZ_GPIO_PORTF(11),
-		.active_low		= 1,
-		.code			= KEY_PAUSE,
-		.debounce_interval	= 10,
-	},
+
 };
 
 static struct gpio_keys_platform_data gcw0_gpio_keys_pdata = {
