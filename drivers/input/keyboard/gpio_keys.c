@@ -876,6 +876,7 @@ static void __exit gpio_keys_exit(void)
 }
 
 late_initcall(gpio_keys_init);
+/* module_init(gpio_keys_init); */
 module_exit(gpio_keys_exit);
 
 MODULE_LICENSE("GPL");

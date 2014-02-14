@@ -199,6 +199,13 @@ static struct gpio_keys_button gcw0_buttons[] = {
 		.code			= KEY_ESC,
 		.debounce_interval	= 10,
 	},
+	/* POWER slider */ {
+		.gpio		       = JZ_GPIO_PORTE(26),
+		.active_low	       = 1,
+		.code		       = KEY_POWER,
+		.debounce_interval      = 10,
+		.wakeup		       = 1,
+	},
 
 };
 
@@ -243,10 +250,10 @@ static struct jz_mmc_platform_data gcw_external_sd_data = {
 
 /* FM radio receiver */
 
-static struct rda5807_platform_data gcw0_rda5807_pdata = {
-	.input_flags		= RDA5807_INPUT_LNA_WC_25 | RDA5807_LNA_PORT_P,
-	.output_flags		= RDA5807_OUTPUT_AUDIO_ANALOG,
-};
+/* static struct rda5807_platform_data gcw0_rda5807_pdata = { */
+/* 	.input_flags		= RDA5807_INPUT_LNA_WC_25 | RDA5807_LNA_PORT_P, */
+/* 	.output_flags		= RDA5807_OUTPUT_AUDIO_ANALOG, */
+/* }; */
 
 
 /* Power Management Unit */
@@ -366,13 +373,13 @@ static struct jz_otg_board_data gcw0_otg_board_data = {
 
 /* I2C devices */
 
-static struct i2c_board_info gcw0_i2c0_devs[] __initdata = {
-	{
-		.type		= "radio-rda5807",
-		.addr		= RDA5807_I2C_ADDR,
-		.platform_data	= &gcw0_rda5807_pdata,
-	},
-};
+/* static struct i2c_board_info gcw0_i2c0_devs[] __initdata = { */
+/* 	{ */
+/* 		.type		= "radio-rda5807", */
+/* 		.addr		= RDA5807_I2C_ADDR, */
+/* 		.platform_data	= &gcw0_rda5807_pdata, */
+/* 	}, */
+/* }; */
 
 static struct i2c_board_info gcw0_i2c1_devs[] __initdata = {
 	/* the g-sensor is on this bus, but we don't have a driver for it */
@@ -525,27 +532,27 @@ struct jz_clk_board_data jz_clk_bdata = {
 
 /* Power LED */
 
-static struct gpio_led gcw0_leds[] = {
-	{
-		.name = "power",
-		.gpio = JZ_GPIO_PORTB(30),
-		.active_low = 1,
-		.default_state = LEDS_GPIO_DEFSTATE_ON,
-	},
-};
+/* static struct gpio_led gcw0_leds[] = { */
+/* 	{ */
+/* 		.name = "power", */
+/* 		.gpio = JZ_GPIO_PORTB(30), */
+/* 		.active_low = 1, */
+/* 		.default_state = LEDS_GPIO_DEFSTATE_ON, */
+/* 	}, */
+/* }; */
 
-static struct gpio_led_platform_data gcw0_led_pdata = {
-	.leds = gcw0_leds,
-	.num_leds = ARRAY_SIZE(gcw0_leds),
-};
+/* static struct gpio_led_platform_data gcw0_led_pdata = { */
+/* 	.leds = gcw0_leds, */
+/* 	.num_leds = ARRAY_SIZE(gcw0_leds), */
+/* }; */
 
-static struct platform_device gcw0_led_device = {
-	.name = "leds-gpio",
-	.id = -1,
-	.dev = {
-		.platform_data = &gcw0_led_pdata,
-	},
-};
+/* static struct platform_device gcw0_led_device = { */
+/* 	.name = "leds-gpio", */
+/* 	.id = -1, */
+/* 	.dev = { */
+/* 		.platform_data = &gcw0_led_pdata, */
+/* 	}, */
+/* }; */
 
 
 /* Device registration */
@@ -578,7 +585,7 @@ static struct platform_device *jz_platform_devices[] __initdata = {
 	&gcw0_audio_device,
 	&jz4770_msc0_device,
 	&jz4770_msc1_device,
-	&gcw0_led_device,
+	/* &gcw0_led_device, */
 	&gcw0_dc_charger_device,
 	&gcw0_usb_charger_device,
 	&jz4770_vpu_device,
@@ -606,7 +613,7 @@ static void __init board_i2c_init(void)
 	jz4770_i2c1_device.dev.platform_data = &gcw0_i2c1_platform_data;
 	jz4770_i2c2_device.dev.platform_data = &gcw0_i2c2_platform_data;
 
-	i2c_register_board_info(0, gcw0_i2c0_devs, ARRAY_SIZE(gcw0_i2c0_devs));
+	/* i2c_register_board_info(0, gcw0_i2c0_devs, ARRAY_SIZE(gcw0_i2c0_devs)); */
 	i2c_register_board_info(1, gcw0_i2c1_devs, ARRAY_SIZE(gcw0_i2c1_devs));
 	i2c_register_board_info(2, gcw0_i2c2_devs, ARRAY_SIZE(gcw0_i2c2_devs));
 	i2c_register_board_info(3, gcw0_i2c3_devs, ARRAY_SIZE(gcw0_i2c3_devs));
