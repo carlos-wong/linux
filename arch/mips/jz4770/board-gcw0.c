@@ -103,9 +103,9 @@ static void gcw0_panel_disable(void *panel)
 
 static struct nt39016_platform_data gcw0_panel_pdata = {
 	.gpio_reset		= JZ_GPIO_PORTE(2),
-	.gpio_clock		= JZ_GPIO_PORTE(15),
-	.gpio_enable		= JZ_GPIO_PORTE(16),
-	.gpio_data		= JZ_GPIO_PORTE(17),
+	/* .gpio_clock		= JZ_GPIO_PORTE(15), */
+	.gpio_enable		= JZ_GPIO_PORTE(13),
+	/* .gpio_data		= JZ_GPIO_PORTE(17), */
 };
 
 static struct panel_ops gcw0_panel_ops = {

@@ -25,6 +25,7 @@ static const u16 panel_standby = RV(0x00, 0x05);
 
 static void nt39016_write_reg(struct nt39016_platform_data *pdata, u16 data)
 {
+	return;
 	int bit;
 
 	udelay(2);
@@ -74,7 +75,11 @@ static int nt39016_panel_init(void **out_panel, struct device *dev,
 		dev_err(dev,
 			"Failed to request LCD panel 3-wire clock pin: %d\n",
 			ret);
-		return ret;
+		/* return ret; */
+	}
+	else
+	{
+		gpio_direction_output(pdata->gpio_clock,  1);		
 	}
 
 	ret = devm_gpio_request(dev, pdata->gpio_enable, "LCD 3-wire enable");
@@ -82,7 +87,11 @@ static int nt39016_panel_init(void **out_panel, struct device *dev,
 		dev_err(dev,
 			"Failed to request LCD panel 3-wire enable pin: %d\n",
 			ret);
-		return ret;
+		/* return ret; */
+	}
+	else
+	{
+		gpio_direction_output(pdata->gpio_enable, 1);		
 	}
 
 	ret = devm_gpio_request(dev, pdata->gpio_data, "LCD 3-wire data");
@@ -90,15 +99,14 @@ static int nt39016_panel_init(void **out_panel, struct device *dev,
 		dev_err(dev,
 			"Failed to request LCD panel 3-wire data pin: %d\n",
 			ret);
-		return ret;
+		/* return ret; */
+	}
+	else
+	{
+		gpio_direction_output(pdata->gpio_data,   0);		
 	}
 
 	/* Set initial GPIO pin directions and value. */
-
-	gpio_direction_output(pdata->gpio_clock,  1);
-	gpio_direction_output(pdata->gpio_enable, 1);
-	gpio_direction_output(pdata->gpio_data,   0);
-
 	return 0;
 }
 
@@ -110,15 +118,16 @@ static void nt39016_panel_enable(void *panel)
 {
 	struct nt39016_platform_data *pdata = ((struct nt39016 *)panel)->pdata;
 	int i;
-
+	gpio_direction_output(pdata->gpio_enable,1);
+	
 	/* Reset LCD panel. */
 	gpio_direction_output(pdata->gpio_reset, 0);
-	udelay(50);
+	mdelay(550);
 	gpio_direction_output(pdata->gpio_reset, 1);
-
+	mdelay(500);
 	/* Init panel registers. */
-	for (i = 0; i < ARRAY_SIZE(panel_data); i++)
-		nt39016_write_reg(pdata, panel_data[i]);
+	/* for (i = 0; i < ARRAY_SIZE(panel_data); i++) */
+	/* 	nt39016_write_reg(pdata, panel_data[i]); */
 }
 
 static void nt39016_panel_disable(void *panel)

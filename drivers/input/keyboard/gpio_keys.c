@@ -328,7 +328,7 @@ static void gpio_keys_gpio_report_event(struct gpio_button_data *bdata)
 	struct input_dev *input = bdata->input;
 	unsigned int type = button->type ?: EV_KEY;
 	int state = (gpio_get_value_cansleep(button->gpio) ? 1 : 0) ^ button->active_low;
-
+	/* pirntk("state is 0x%x type is 0x%x\n",state,type); */
 	if (type == EV_ABS) {
 		if (state)
 			input_event(input, type, button->code, button->value);
@@ -563,6 +563,7 @@ static void gpio_keys_close(struct input_dev *input)
  */
 
 #ifdef CONFIG_OF
+
 /*
  * Translate OpenFirmware node properties into platform_data
  */
@@ -692,7 +693,7 @@ static int gpio_keys_probe(struct platform_device *pdev)
 	struct input_dev *input;
 	int i, error;
 	int wakeup = 0;
-
+	
 	if (!pdata) {
 		pdata = gpio_keys_get_devtree_pdata(dev);
 		if (IS_ERR(pdata))
@@ -876,7 +877,6 @@ static void __exit gpio_keys_exit(void)
 }
 
 late_initcall(gpio_keys_init);
-/* module_init(gpio_keys_init); */
 module_exit(gpio_keys_exit);
 
 MODULE_LICENSE("GPL");
