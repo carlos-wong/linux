@@ -77,14 +77,15 @@ struct jz4760lcd_panel_t {
 };
 
 static const struct jz4760lcd_panel_t jz4760_lcd_panel = {
-	.cfg = LCD_CFG_LCDPIN_LCD | LCD_CFG_RECOVER | /* Underrun recover */
-	       LCD_CFG_MODE_GENERIC_TFT | /* General TFT panel */
-	       LCD_CFG_MODE_TFT_24BIT | 	/* output 24bpp */
-	       LCD_CFG_PCP |	/* Pixel clock polarity: falling edge */
-	       LCD_CFG_HSP | 	/* Hsync polarity: active low */
-	       LCD_CFG_VSP,	/* Vsync polarity: leading edge is falling edge */
+	.cfg = LCD_CFG_LCDPIN_LCD | LCD_CFG_RECOVER | /* Underrun recover */ 
+	LCD_CFG_NEWDES | /* 8words descriptor */
+	LCD_CFG_MODE_GENERIC_TFT | /* Serial TFT panel */
+	LCD_CFG_MODE_TFT_24BIT | 	/* output 24bpp */
+	LCD_CFG_HSP | 	/* Hsync polarity: active low */
+	LCD_CFG_VSP ,	/* Vsync polarity: leading edge is falling edge */
+
 	/* w, h, fclk, hsw, vsw, elw, blw, efw, bfw */
-	320, 240, 60, 50, 1, 10, 70, 5, 5,
+	480, 272,  80, 41, 10, 2, 2, 2, 2, // 3 12 2 43 给力屏时序
 	/* Note: 432000000 / 72 = 60 * 400 * 250, so we get exactly 60 Hz. */
 };
 
@@ -198,9 +199,9 @@ static int jz4760fb_mmap(struct fb_info *fb, struct vm_area_struct *vma)
 
 static struct fb_videomode video_modes[] = {
 	{
-		.name = "320x240",
-		.xres = 320,
-		.yres = 240,
+		.name = "480x272",
+		.xres = 480,
+		.yres = 272,
 		// TODO(MtH): Set refresh or pixclock.
 		.vmode = FB_VMODE_NONINTERLACED,
 	},
