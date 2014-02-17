@@ -3,11 +3,26 @@
 #
 
 menu "Display Device Drivers"
+config LCD_PANEL
+       bool
+       default y
+choice
+	depends on LCD_PANEL
+	prompt "JZ4770 LCD Panels Support"
+
+	---help---
+	   Please select the lcd panel in you board
 
 config PANEL_NT39016
 	# TODO: Switch to tristate once the driver is a module.
 	bool "Novatek NT39016 based panel"
 	help
 	  Select this if you are using a Novatek NT39016 LCD driver IC.
+config PANEL_NEOGEOX
+	# TODO: Switch to tristate once the driver is a module.
+	bool "NEOGEOX based panel"
+	help
+	  Select this if you are using a NEOGEO-X screen LCD driver IC.
+endchoice
 
 endmenu
