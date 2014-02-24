@@ -328,7 +328,6 @@ static void gpio_keys_gpio_report_event(struct gpio_button_data *bdata)
 	struct input_dev *input = bdata->input;
 	unsigned int type = button->type ?: EV_KEY;
 	int state = (gpio_get_value_cansleep(button->gpio) ? 1 : 0) ^ button->active_low;
-	printk("state is 0x%x type is 0x%x\n",state,type);
 	if (type == EV_ABS) {
 		if (state)
 			input_event(input, type, button->code, button->value);
@@ -359,9 +358,7 @@ static void gpio_keys_gpio_timer(unsigned long _data)
 static irqreturn_t gpio_keys_gpio_isr(int irq, void *dev_id)
 {
 	struct gpio_button_data *bdata = dev_id;
-	printk("%s:%d\n",__func__,__LINE__);
 	BUG_ON(irq != bdata->irq);
-	printk("%s:%d\n",__func__,__LINE__);
 
 	if (bdata->button->wakeup)
 		pm_stay_awake(bdata->input->dev.parent);
@@ -395,9 +392,7 @@ static irqreturn_t gpio_keys_irq_isr(int irq, void *dev_id)
 	const struct gpio_keys_button *button = bdata->button;
 	struct input_dev *input = bdata->input;
 	unsigned long flags;
-	printk("irq is right? %s\n",(irq != bdata->irq) ? "no":"yes");
 	BUG_ON(irq != bdata->irq);
-	printk("irq key %d\n",button->gpio);
 	spin_lock_irqsave(&bdata->lock, flags);
 
 	if (!bdata->key_pressed) {
@@ -456,7 +451,7 @@ static int gpio_keys_setup_key(struct platform_device *pdev,
 				bdata->timer_debounce =
 						button->debounce_interval;
 		}
-
+		jz_gpio_disable_pullup(button->gpio);
 		irq = gpio_to_irq(button->gpio);
 		if (irq < 0) {
 			error = irq;
@@ -504,7 +499,6 @@ static int gpio_keys_setup_key(struct platform_device *pdev,
 		irqflags |= IRQF_SHARED;
 
 	error = request_any_context_irq(bdata->irq, isr, irqflags, desc, bdata);
-	printk("request_any_context_irq at %d return %d\n",button->gpio,error);
 	if (error < 0) {
 		dev_err(dev, "Unable to claim irq %d; error %d\n",
 			bdata->irq, error);
@@ -524,7 +518,6 @@ static void gpio_keys_report_state(struct gpio_keys_drvdata *ddata)
 {
 	struct input_dev *input = ddata->input;
 	int i;
-	printk("%s:%d number of buttons is %d\n\n",__func__,__LINE__,ddata->pdata->nbuttons);
 	for (i = 0; i < ddata->pdata->nbuttons; i++) {
 		struct gpio_button_data *bdata = &ddata->data[i];
 		if (gpio_is_valid(bdata->button->gpio))
