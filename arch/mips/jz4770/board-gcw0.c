@@ -623,7 +623,7 @@ static void __init board_i2c_init(void)
 static void __init board_gpio_setup(void)
 {
 	/* SELECT button */
-	jz_gpio_disable_pullup(JZ_GPIO_PORTD(18));
+	/* jz_gpio_disable_pullup(JZ_GPIO_PORTD(18)); */
 
 	/* DC power source present (high active) */
 	jz_gpio_disable_pullup(GPIO_DC_CHARGER);
