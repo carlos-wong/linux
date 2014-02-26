@@ -707,10 +707,14 @@ static void gpio_init(void)
 	else
 		__gpio_as_lcd_18bit();
 }
+
 void ipu_mode_set(struct jzfb *jzfb)
 {
 	struct fb_info *fb;
 	unsigned int size;
+	int i = 100000;
+	unsigned int test_reg = 0;
+
 	fb = jzfb->fb;
 	size = PAGE_ALIGN(
 		max_bytes_per_frame(&fb->modelist, 32) * 2);
@@ -722,12 +726,52 @@ void ipu_mode_set(struct jzfb *jzfb)
 	jz47_ipu_module.out_panel.output_phy = jzfb->fb->fix.smem_start + (size >> 1);
 	jz47_ipu_module.out_panel.src_phy = jzfb->fb->fix.smem_start;
 
-	jz47_ipu_module.out_panel.w = fb->var.xres;
-	jz47_ipu_module.out_panel.h = fb->var.yres;
-	jz47_ipu_module.out_panel.bytes_per_line = fb->fix.line_length;
-	jz47_ipu_module.out_panel.bpp_byte = fb->fix.line_length / fb->var.xres;
-		
-	reset_ipu(IPU_V_BASE);
+	jz47_ipu_module.out_panel.w = 480;
+	jz47_ipu_module.out_panel.h = 272;
+	jz47_ipu_module.out_panel.bytes_per_line = 480 * 4;
+	jz47_ipu_module.out_panel.bpp_byte = 4;
+
+#define ipu_vbase IPU_V_BASE
+	reset_ipu(ipu_vbase);
+
+	jz47_ipu_module.srcW = fb->var.xres;
+	jz47_ipu_module.srcH = fb->var.yres;
+
+	jz47_ipu_module.act_x = 0;
+	jz47_ipu_module.act_y = 0;
+
+	// set the resize_w, resize_h
+	jz47_ipu_module.act_w = 480;
+	jz47_ipu_module.act_h = 272;
+
+	jz47_ipu_module.need_config_resize = 1;
+	jz47_ipu_module.need_config_inputpara = 1;
+	jz47_ipu_module.need_config_outputpara = 1;
+	
+	jzfb_lcdc_disable(jzfb);
+	test_reg = get_ipu_status(ipu_vbase);
+	while(i--)
+	{
+		if(test_reg != get_ipu_status(ipu_vbase))
+		{
+			printk("i is %d test_reg is 0x%x\n",i,test_reg);
+			test_reg = get_ipu_status(ipu_vbase);
+		}
+	}
+
+	stop_ipu(ipu_vbase);
+	while (!polling_end_flag(ipu_vbase))
+	{
+		printf("%s %d\n",__FILE__,__LINE__);
+		//jz47_dump_ipu_regs(-1);
+		sleep(1);
+		clear_end_flag(ipu_vbase);
+	}
+	
+	enable_ipu_addrsel(ipu_vbase);
+
+	if (jz47_ipu_module.need_config_resize)
+		jz47_calc_resize_para();
 
 	jzfb_power_up(jzfb);
 }
