@@ -159,11 +159,8 @@
 #define W_COEF_SFT        2
 #define W_COEF_MSK        0x3FF
 
-#ifdef JZ4760_OPT
 #define START_N_SFT       0
-#else
-#define START_N_SFT       12
-#endif
+
 #define W_CUBE_COEF0_SFT 0x6
 #define W_CUBE_COEF0_MSK 0x7FF
 #define W_CUBE_COEF1_SFT 0x11
@@ -174,13 +171,8 @@
 
 
 // function about REG_CTRL
-#ifdef JZ4760_OPT
 #define stop_ipu(IPU_V_BASE) \
 REG32(IPU_V_BASE + REG_CTRL) |= IPU_STOP;
-#else
-#define stop_ipu(IPU_V_BASE) \
-REG32(IPU_V_BASE + REG_CTRL) &= ~IPU_RUN;
-#endif
 
 #define run_ipu(IPU_V_BASE) \
 REG32(IPU_V_BASE + REG_CTRL) |= IPU_RUN;
