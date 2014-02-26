@@ -1,13 +1,16 @@
 #ifndef _JZ47_IPU_REGOPS_H_
 #define _JZ47_IPU_REGOPS_H_
 
+#undef REG32
 #define REG32(val)  (*((volatile unsigned int *)(val)))
+
+
 
 // CLKGR
 #define CPM_CLKGR         0x10000020
 #define CPM_CLKGR_VADDR   0xB0000020
 #define CPM_CLKGR_OFFSET   0x20
-#define CPM_CLKGR1_OFFSET  0x28
+/* #define CPM_CLKGR1_OFFSET  0x28 */
 
 // Module for CLKGR
 #define IDCT_CLOCK      (1 << 27)

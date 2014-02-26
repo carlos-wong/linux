@@ -40,4 +40,11 @@ struct Ratio_n2m
   int n, m;
 };
 
+#define IPU_OUT_FB        0
+#define IPU_OUT_LCD       1
+#define IPU_OUT_PAL_TV    2
+#define IPU_OUT_NTSC_TV   3
+#define IPU_OUT_MEM       8
+
+#define IPU_V_BASE		0xB3080000
 #endif

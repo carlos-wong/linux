@@ -51,6 +51,13 @@
 #include "console/fbcon.h"
 
 #include "jz47_iputype.h"
+#include "jz47_ipu_regops.h"
+
+struct JZ47_IPU_MOD jz47_ipu_module = {
+	.output_mode = IPU_OUT_LCD, /* Use the frame for the default */ 
+	.rsize_algorithm = 1,      /* 0: liner, 1: bicube, 2: biliner.  */
+	.rsize_bicube_level = -2,     /*-2, -1, -0.75, -0.5 */
+};
 
 
 
@@ -702,8 +709,26 @@ static void gpio_init(void)
 }
 void ipu_mode_set(struct jzfb *jzfb)
 {
+	struct fb_info *fb;
+	unsigned int size;
+	fb = jzfb->fb;
+	size = PAGE_ALIGN(
+		max_bytes_per_frame(&fb->modelist, 32) * 2);
+
+	
 	jzfb_power_down(jzfb);
 	
+	jz47_ipu_module.output_mode = IPU_OUT_LCD;	
+	jz47_ipu_module.out_panel.output_phy = jzfb->fb->fix.smem_start + (size >> 1);
+	jz47_ipu_module.out_panel.src_phy = jzfb->fb->fix.smem_start;
+
+	jz47_ipu_module.out_panel.w = fb->var.xres;
+	jz47_ipu_module.out_panel.h = fb->var.yres;
+	jz47_ipu_module.out_panel.bytes_per_line = fb->fix.line_length;
+	jz47_ipu_module.out_panel.bpp_byte = fb->fix.line_length / fb->var.xres;
+		
+	reset_ipu(IPU_V_BASE);
+
 	jzfb_power_up(jzfb);
 }
 static int jz4760_fb_probe(struct platform_device *pdev)
