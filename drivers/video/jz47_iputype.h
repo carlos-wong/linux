@@ -1,3 +1,5 @@
+#ifndef _JZ47_IPUTYPE_H_
+#define _JZ47_IPUTYPE_H_
 
 #define IPU_LUT_LEN 32
 
@@ -38,3 +40,4 @@ struct Ratio_n2m
   int n, m;
 };
 
+#endif
