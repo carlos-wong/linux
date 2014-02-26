@@ -50,6 +50,9 @@
 
 #include "console/fbcon.h"
 
+#include "jz47_iputype.h"
+
+
 
 /* use new descriptor(8 words) */
 struct jz4760_lcd_dma_desc {
@@ -199,9 +202,9 @@ static int jz4760fb_mmap(struct fb_info *fb, struct vm_area_struct *vma)
 
 static struct fb_videomode video_modes[] = {
 	{
-		.name = "480x272",
-		.xres = 480,
-		.yres = 272,
+		.name = "320x240",
+		.xres = 320,
+		.yres = 240,
 		// TODO(MtH): Set refresh or pixclock.
 		.vmode = FB_VMODE_NONINTERLACED,
 	},
@@ -349,6 +352,8 @@ static int jz4760fb_pan_display(struct fb_var_screeninfo *var,
 
 	jzfb->pan_offset = fb->fix.line_length * vpan;
 	dev_dbg(&jzfb->pdev->dev, "var.yoffset: %d\n", vpan);
+	/* dev_printk(&jzfb->pdev->dev, "var.yoffset: %d\n", vpan); */
+	printk("var.yoffset: %d\n", vpan);
 
 	jzfb->delay_flush = 8;
 	dma_cache_wback_inv((unsigned long)(lcd_frame1 + jzfb->pan_offset),
@@ -513,6 +518,8 @@ static void jz4760fb_set_panel_mode(struct jzfb *jzfb,
 static void jz4760fb_foreground_resize(const struct jz4760lcd_panel_t *panel,
 				       const struct fb_var_screeninfo *var)
 {
+	/* int fg1_words_per_line = words_per_line(panel->w, var->bits_per_pixel); */
+	/* int fg1_words_per_frame = fg1_words_per_line * panel->h; */
 	int fg1_words_per_line = words_per_line(var->xres, var->bits_per_pixel);
 	int fg1_words_per_frame = fg1_words_per_line * var->yres;
 	int xpos, ypos;
@@ -533,6 +540,7 @@ static void jz4760fb_foreground_resize(const struct jz4760lcd_panel_t *panel,
 	if (xpos < 0) xpos = 0;
 	ypos = (panel->h - var->yres) / 2;
 	if (ypos < 0) ypos = 0;
+	/* xpos = ypos = 0; */
 
 	REG_LCD_XYP1 = ypos << 16 | xpos;
 
@@ -541,8 +549,8 @@ static void jz4760fb_foreground_resize(const struct jz4760lcd_panel_t *panel,
 
 	dma1_desc0.cmd = (dma1_desc0.cmd & 0xff000000) | fg1_words_per_frame;
 	dma1_desc1.cmd = (dma1_desc1.cmd & 0xff000000) | fg1_words_per_line;
-	dma1_desc0.desc_size = dma1_desc1.desc_size =
-				(var->yres + 1) << 16 | var->xres;
+	dma1_desc0.desc_size = dma1_desc1.desc_size = (var->yres + 1) << 16 | var->xres;
+				/* (panel->h + 1) << 16 | panel->w; */
 
 	dma_cache_wback((unsigned int) &dma1_desc0, sizeof(dma1_desc0));
 	dma_cache_wback((unsigned int) &dma1_desc1, sizeof(dma1_desc1));
@@ -692,7 +700,12 @@ static void gpio_init(void)
 	else
 		__gpio_as_lcd_18bit();
 }
-
+void ipu_mode_set(struct jzfb *jzfb)
+{
+	jzfb_power_down(jzfb);
+	
+	jzfb_power_up(jzfb);
+}
 static int jz4760_fb_probe(struct platform_device *pdev)
 {
 	struct jzfb_platform_data *pdata = pdev->dev.platform_data;
@@ -796,7 +809,7 @@ static int jz4760_fb_probe(struct platform_device *pdev)
 	dev_info(&pdev->dev,
 		"fb%d: %s frame buffer device, using %dK of video memory\n",
 		fb->node, fb->fix.id, fb->fix.smem_len>>10);
-
+	ipu_mode_set(jzfb);
 	return 0;
 
 err_exit_panel:
