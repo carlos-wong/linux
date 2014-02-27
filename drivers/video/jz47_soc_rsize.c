@@ -1,17 +1,14 @@
 
-//#include "config.h"
-
-#include <stdio.h>
-#include <stdlib.h>
+#define JZ4750_OPT
 #ifdef JZ4750_OPT
-#include "jz4750_ipu_regops.h"
+#include "jz47_ipu_regops.h"
 #else
 #include "jz4740_ipu_regops.h"
 #endif
 #include "jz47_iputype.h"
 
 extern struct JZ47_IPU_MOD jz47_ipu_module;
-extern int jz47_cpu_type;
+int jz47_cpu_type = 4760;
 
 int sinxdivx_table_8[(2<<9)+1];
 int sinxdivx_table_init = 0;
@@ -240,7 +237,7 @@ int init_ipu_ratio_table ()
 #endif
 
 
-int resize_out_cal (int insize, int outsize, int srcN, int dstM, int upScale)
+static int resize_out_cal (int insize, int outsize, int srcN, int dstM, int upScale)
 {
   int tmp, calsize;
   float tmp2;
@@ -256,7 +253,7 @@ int resize_out_cal (int insize, int outsize, int srcN, int dstM, int upScale)
   return calsize;
 }
 
-int find_ipu_ratio_factor (float ratio, int lut_len)
+static int find_ipu_ratio_factor (float ratio, int lut_len)
 {
   int i, sel;
   float diff, min;
@@ -289,7 +286,7 @@ int find_ipu_ratio_factor (float ratio, int lut_len)
 }
 
 /* Following codes is written depend on SPECS, please read the SPEC document for details.  */
-int resize_lut_calc (int srcN, int dstM, int upScale, unsigned int coef[], float fixed_point_coef)
+static int resize_lut_calc (int srcN, int dstM, int upScale, unsigned int coef[], float fixed_point_coef)
 {
   int i, j, t, x, in, out, out0, off;
   out0 = 0;
@@ -385,8 +382,13 @@ int resize_lut_calc (int srcN, int dstM, int upScale, unsigned int coef[], float
 }
 
 static void caculate_bicube_coef_table(unsigned int bicube_coef[], unsigned int coef[], int idx);
-
-int jz47_calc_resize_para()
+void test(void)
+{
+	float test = 1.0;
+	int test1 = 0;
+	test = test1;
+}
+static void jz47_calc_resize_para(void)
 {
   int srcN, dstM, resize_w, resize_h, srcW, srcH;
   int width_resize_enable, height_resize_enable;
@@ -475,9 +477,9 @@ int jz47_calc_resize_para()
                                    jz47_ipu_module.resize_para.height_lut_coef, idx);
     }
   }
-  return 0;
+  /* return 0; */
 }
-
+/* EXPORT_SYMBOL(jz47_calc_resize_para); */
 // following function is used for bicube algorithm
 //----------------------------------------------------------
 

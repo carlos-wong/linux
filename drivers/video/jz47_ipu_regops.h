@@ -1,8 +1,8 @@
 #ifndef _JZ47_IPU_REGOPS_H_
 #define _JZ47_IPU_REGOPS_H_
 
-#undef REG32
-#define REG32(val)  (*((volatile unsigned int *)(val)))
+/* #undef REG32 */
+/* #define REG32(val)  (*((volatile unsigned int *)(val))) */
 
 
 

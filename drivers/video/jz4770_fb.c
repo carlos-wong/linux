@@ -53,6 +53,8 @@
 #include "jz47_iputype.h"
 #include "jz47_ipu_regops.h"
 
+extern int jz47_calc_resize_para(void);
+
 struct JZ47_IPU_MOD jz47_ipu_module = {
 	.output_mode = IPU_OUT_LCD, /* Use the frame for the default */ 
 	.rsize_algorithm = 1,      /* 0: liner, 1: bicube, 2: biliner.  */
@@ -762,19 +764,21 @@ void ipu_mode_set(struct jzfb *jzfb)
 	stop_ipu(ipu_vbase);
 	while (!polling_end_flag(ipu_vbase))
 	{
-		printf("%s %d\n",__FILE__,__LINE__);
+		printk("%s %d\n",__FILE__,__LINE__);
 		//jz47_dump_ipu_regs(-1);
-		sleep(1);
+		mdelay(100);
 		clear_end_flag(ipu_vbase);
 	}
 	
 	enable_ipu_addrsel(ipu_vbase);
 
-	if (jz47_ipu_module.need_config_resize)
-		jz47_calc_resize_para();
+	/* if (jz47_ipu_module.need_config_resize) */
+	/* 	jz47_calc_resize_para(); */
 
 	jzfb_power_up(jzfb);
 }
+
+
 static int jz4760_fb_probe(struct platform_device *pdev)
 {
 	struct jzfb_platform_data *pdata = pdev->dev.platform_data;
