@@ -20,7 +20,7 @@
 #include <linux/pwm.h>
 #include <linux/pwm_backlight.h>
 #include <linux/slab.h>
-
+#include <linux/delay.h>
 struct pwm_bl_data {
 	struct pwm_device	*pwm;
 	struct device		*dev;
@@ -48,7 +48,6 @@ static int pwm_backlight_update_status(struct backlight_device *bl)
 
 	if (pb->notify)
 		brightness = pb->notify(pb->dev, brightness);
-
 	if (brightness == 0) {
 		pwm_config(pb->pwm, 0, pb->period);
 		pwm_disable(pb->pwm);
@@ -209,7 +208,6 @@ static int pwm_backlight_probe(struct platform_device *pdev)
 	pb->pwm = devm_pwm_get(&pdev->dev, NULL);
 	if (IS_ERR(pb->pwm)) {
 		dev_err(&pdev->dev, "unable to request PWM, trying legacy API\n");
-
 		pb->pwm = pwm_request(data->pwm_id, "pwm-backlight");
 		if (IS_ERR(pb->pwm)) {
 			dev_err(&pdev->dev, "unable to request legacy PWM\n");
@@ -248,10 +246,8 @@ static int pwm_backlight_probe(struct platform_device *pdev)
 			 data->dft_brightness, data->max_brightness);
 		data->dft_brightness = data->max_brightness;
 	}
-
-	bl->props.brightness = data->dft_brightness;
+	bl->props.brightness = 0;//data->dft_brightness;
 	backlight_update_status(bl);
-
 	platform_set_drvdata(pdev, bl);
 	return 0;
 
@@ -265,7 +261,6 @@ static int pwm_backlight_remove(struct platform_device *pdev)
 {
 	struct backlight_device *bl = platform_get_drvdata(pdev);
 	struct pwm_bl_data *pb = bl_get_data(bl);
-
 	backlight_device_unregister(bl);
 	pwm_config(pb->pwm, 0, pb->period);
 	pwm_disable(pb->pwm);
