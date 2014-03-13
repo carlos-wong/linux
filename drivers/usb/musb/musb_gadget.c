@@ -1836,7 +1836,7 @@ static int musb_gadget_start(struct usb_gadget *g,
 	musb->gadget_driver = driver;
 
 	spin_lock_irqsave(&musb->lock, flags);
-	musb->is_active = 1;
+	/* musb->is_active = 1; */ //default not connect the musb_g_reset will set the right status when really connect with udc
 
 	otg_set_peripheral(otg, &musb->g);
 	musb->xceiv->state = OTG_STATE_B_IDLE;
