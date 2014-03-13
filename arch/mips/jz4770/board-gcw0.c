@@ -288,28 +288,29 @@ static struct jz_battery_platform_data gcw0_battery_pdata = {
 
 /* Charger */
 
-#define GPIO_DC_CHARGER		JZ_GPIO_PORTF(5)
+/* #define GPIO_DC_CHARGER		JZ_GPIO_PORTF(5) */
 #define GPIO_USB_CHARGER	JZ_GPIO_PORTB(5)
 
 static char *gcw0_batteries[] = {
 	"battery",
 };
 
-static struct gpio_charger_platform_data gcw0_dc_charger_pdata = {
-	.name = "dc",
-	.type = POWER_SUPPLY_TYPE_MAINS,
-	.gpio = GPIO_DC_CHARGER,
-	.supplied_to = gcw0_batteries,
-	.num_supplicants = ARRAY_SIZE(gcw0_batteries),
-};
+/* static struct gpio_charger_platform_data gcw0_dc_charger_pdata = { */
+/* 	.name = "dc", */
+/* 	.type = POWER_SUPPLY_TYPE_MAINS, */
+/* 	.gpio_active_low = 1, */
+/* 	.gpio = GPIO_USB_CHARGER, */
+/* 	.supplied_to = gcw0_batteries, */
+/* 	.num_supplicants = ARRAY_SIZE(gcw0_batteries), */
+/* }; */
 
-static struct platform_device gcw0_dc_charger_device = {
-	.name = "gpio-charger",
-	.id = 0,
-	.dev = {
-		.platform_data = &gcw0_dc_charger_pdata,
-	},
-};
+/* static struct platform_device gcw0_dc_charger_device = { */
+/* 	.name = "gpio-charger", */
+/* 	.id = 0, */
+/* 	.dev = { */
+/* 		.platform_data = &gcw0_dc_charger_pdata, */
+/* 	}, */
+/* }; */
 
 static struct gpio_charger_platform_data gcw0_usb_charger_pdata = {
 	.name = "usb",
@@ -321,7 +322,7 @@ static struct gpio_charger_platform_data gcw0_usb_charger_pdata = {
 
 static struct platform_device gcw0_usb_charger_device = {
 	.name = "gpio-charger",
-	.id = 1,
+	.id = 0,
 	.dev = {
 		.platform_data = &gcw0_usb_charger_pdata,
 	},
@@ -330,35 +331,35 @@ static struct platform_device gcw0_usb_charger_device = {
 
 /* USB 1.1 Host (OHCI) */
 
-static struct regulator_consumer_supply gcw0_internal_usb_regulator_consumer =
-	REGULATOR_SUPPLY("vbus", "jz4770-ohci");
+/* static struct regulator_consumer_supply gcw0_internal_usb_regulator_consumer = */
+/* 	REGULATOR_SUPPLY("vbus", "jz4770-ohci"); */
 
-static struct regulator_init_data gcw0_internal_usb_regulator_init_data = {
-	.num_consumer_supplies = 1,
-	.consumer_supplies = &gcw0_internal_usb_regulator_consumer,
-	.constraints = {
-		.name = "USB power",
-		.min_uV = 3300000,
-		.max_uV = 3300000,
-		.valid_modes_mask = REGULATOR_MODE_NORMAL,
-		.valid_ops_mask = REGULATOR_CHANGE_STATUS,
-	},
-};
+/* static struct regulator_init_data gcw0_internal_usb_regulator_init_data = { */
+/* 	.num_consumer_supplies = 1, */
+/* 	.consumer_supplies = &gcw0_internal_usb_regulator_consumer, */
+/* 	.constraints = { */
+/* 		.name = "USB power", */
+/* 		.min_uV = 3300000, */
+/* 		.max_uV = 3300000, */
+/* 		.valid_modes_mask = REGULATOR_MODE_NORMAL, */
+/* 		.valid_ops_mask = REGULATOR_CHANGE_STATUS, */
+/* 	}, */
+/* }; */
 
-static struct fixed_voltage_config gcw0_internal_usb_regulator_data = {
-	.supply_name = "USB power",
-	.microvolts = 3300000,
-	.gpio = JZ_GPIO_PORTF(10),
-	.init_data = &gcw0_internal_usb_regulator_init_data,
-};
+/* static struct fixed_voltage_config gcw0_internal_usb_regulator_data = { */
+/* 	.supply_name = "USB power", */
+/* 	.microvolts = 3300000, */
+/* 	.gpio = JZ_GPIO_PORTF(10), */
+/* 	.init_data = &gcw0_internal_usb_regulator_init_data, */
+/* }; */
 
-static struct platform_device gcw0_internal_usb_regulator_device = {
-	.name = "reg-fixed-voltage",
-	.id = -1,
-	.dev = {
-		.platform_data = &gcw0_internal_usb_regulator_data,
-	}
-};
+/* static struct platform_device gcw0_internal_usb_regulator_device = { */
+/* 	.name = "reg-fixed-voltage", */
+/* 	.id = -1, */
+/* 	.dev = { */
+/* 		.platform_data = &gcw0_internal_usb_regulator_data, */
+/* 	} */
+/* }; */
 
 
 /* USB OTG (musb) */
@@ -373,13 +374,8 @@ static struct jz_otg_board_data gcw0_otg_board_data = {
 
 /* I2C devices */
 
-/* static struct i2c_board_info gcw0_i2c0_devs[] __initdata = { */
-/* 	{ */
-/* 		.type		= "radio-rda5807", */
-/* 		.addr		= RDA5807_I2C_ADDR, */
-/* 		.platform_data	= &gcw0_rda5807_pdata, */
-/* 	}, */
-/* }; */
+static struct i2c_board_info gcw0_i2c0_devs[] __initdata = {
+};
 
 static struct i2c_board_info gcw0_i2c1_devs[] __initdata = {
 	/* the g-sensor is on this bus, but we don't have a driver for it */
@@ -558,7 +554,7 @@ struct jz_clk_board_data jz_clk_bdata = {
 /* Device registration */
 
 static struct platform_device *jz_platform_devices[] __initdata = {
-	&gcw0_internal_usb_regulator_device,
+	/* &gcw0_internal_usb_regulator_device, */
 	&jz4770_usb_ohci_device,
 	&jz4770_usb_otg_xceiv_device,
 	&jz4770_usb_otg_device,
@@ -586,7 +582,7 @@ static struct platform_device *jz_platform_devices[] __initdata = {
 	&jz4770_msc0_device,
 	&jz4770_msc1_device,
 	/* &gcw0_led_device, */
-	&gcw0_dc_charger_device,
+	/* &gcw0_dc_charger_device, */
 	&gcw0_usb_charger_device,
 	&jz4770_vpu_device,
 };
@@ -613,7 +609,7 @@ static void __init board_i2c_init(void)
 	jz4770_i2c1_device.dev.platform_data = &gcw0_i2c1_platform_data;
 	jz4770_i2c2_device.dev.platform_data = &gcw0_i2c2_platform_data;
 
-	/* i2c_register_board_info(0, gcw0_i2c0_devs, ARRAY_SIZE(gcw0_i2c0_devs)); */
+	i2c_register_board_info(0, gcw0_i2c0_devs, ARRAY_SIZE(gcw0_i2c0_devs));
 	i2c_register_board_info(1, gcw0_i2c1_devs, ARRAY_SIZE(gcw0_i2c1_devs));
 	i2c_register_board_info(2, gcw0_i2c2_devs, ARRAY_SIZE(gcw0_i2c2_devs));
 	i2c_register_board_info(3, gcw0_i2c3_devs, ARRAY_SIZE(gcw0_i2c3_devs));
@@ -626,8 +622,9 @@ static void __init board_gpio_setup(void)
 	/* jz_gpio_disable_pullup(JZ_GPIO_PORTD(18)); */
 
 	/* DC power source present (high active) */
+#if defined(GPIO_DC_CHARGER)
 	jz_gpio_disable_pullup(GPIO_DC_CHARGER);
-
+#endif
 	/* USB power source present (high active) */
 	jz_gpio_disable_pullup(GPIO_USB_CHARGER);
 }
