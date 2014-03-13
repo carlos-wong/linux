@@ -52,7 +52,6 @@ static int jz4770_pwm_request(struct pwm_chip *chip, struct pwm_device *pwm)
 {
 	unsigned int gpio = jz4770_pwm_gpio_list[pwm->hwpwm];
 	int ret;
-
 	ret = gpio_request(gpio, pwm->label);
 	if (ret) {
 		dev_err(chip->dev, "Failed to request GPIO#%u for PWM: %d\n",
@@ -60,8 +59,8 @@ static int jz4770_pwm_request(struct pwm_chip *chip, struct pwm_device *pwm)
 		return ret;
 	}
 
-	__gpio_as_func0(gpio);
-
+	
+	
 	__tcu_start_timer_clock(pwm->hwpwm);
 
 	return 0;
@@ -78,6 +77,8 @@ static void jz4770_pwm_free(struct pwm_chip *chip, struct pwm_device *pwm)
 
 static int jz4770_pwm_enable(struct pwm_chip *chip, struct pwm_device *pwm)
 {
+	unsigned int gpio = jz4770_pwm_gpio_list[pwm->hwpwm];
+	__gpio_as_func0(gpio);
 	__tcu_enable_pwm_output(pwm->hwpwm);
 	__tcu_start_counter(pwm->hwpwm);
 	return 0;
