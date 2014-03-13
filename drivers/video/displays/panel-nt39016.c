@@ -91,7 +91,7 @@ static int nt39016_panel_init(void **out_panel, struct device *dev,
 	}
 	else
 	{
-		gpio_direction_output(pdata->gpio_enable, 1);		
+		gpio_direction_output(pdata->gpio_enable, 1);
 	}
 
 	ret = devm_gpio_request(dev, pdata->gpio_data, "LCD 3-wire data");
@@ -118,13 +118,13 @@ static void nt39016_panel_enable(void *panel)
 {
 	struct nt39016_platform_data *pdata = ((struct nt39016 *)panel)->pdata;
 	int i;
-	gpio_direction_output(pdata->gpio_enable,1);
+	/* gpio_direction_output(pdata->gpio_enable,1); */
 	
 	/* Reset LCD panel. */
 	gpio_direction_output(pdata->gpio_reset, 0);
-	mdelay(550);
+	mdelay(250);
 	gpio_direction_output(pdata->gpio_reset, 1);
-	mdelay(500);
+	/* mdelay(500); */
 	/* Init panel registers. */
 	/* for (i = 0; i < ARRAY_SIZE(panel_data); i++) */
 	/* 	nt39016_write_reg(pdata, panel_data[i]); */
